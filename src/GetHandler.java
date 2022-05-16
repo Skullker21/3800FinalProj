@@ -1,12 +1,7 @@
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -23,7 +18,10 @@ public class GetHandler implements HttpHandler {
          parseQuery(query);
 
          // send response
-         String response = "Cart Retrieved";
+         File text = new File("data.json");
+         Scanner scn = new Scanner(text);
+         String response = scn.nextLine();
+
 
          he.sendResponseHeaders(200, response.length());
 

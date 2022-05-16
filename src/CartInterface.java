@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -93,6 +94,7 @@ public class CartInterface {
 
 		String cartString = mapper.writeValueAsString(cartToSave.items);
 
+
 		HashMap<String, String> values = new HashMap<>() {{
 			put("user", userName);
 			put("cart", cartString);
@@ -118,7 +120,7 @@ public class CartInterface {
 
 	}
 
-	private static void loadCart(){
+	private static void loadCart() throws JsonProcessingException {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("http://localhost:8080/get"))
@@ -134,8 +136,17 @@ public class CartInterface {
 
 		String whateverthefrick = String.valueOf(response);
 
-		System.out.println(whateverthefrick);
+
 
 		System.out.println(response.body());
+		ObjectMapper mapper = new ObjectMapper();
+
+		HashMap<String,String> map = mapper.readValue(response.body(), HashMap.class);
+		System.out.println(map.toString());
+
+
+		Cart userCart = new Cart(mapper.readValue(map.get("cart"), HashMap.class));
+
+		userCart.print();
 	}
 }

@@ -6,6 +6,9 @@ public class Cart {
 	public Cart() {
 		
 	}
+	public Cart(HashMap<String, Item> i){
+		items = i;
+	}
 	
 	// adds item to the list of items
 	// adds 1 to quanity if item is already on list
