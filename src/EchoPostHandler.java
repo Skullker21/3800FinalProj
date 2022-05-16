@@ -10,49 +10,57 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class EchoPostHandler implements HttpHandler {
 
          @Override
 
          public void handle(HttpExchange he) throws IOException {
-                 // parse request
-                 Map<String, Object> parameters = new HashMap<String, Object>();
-                 InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
-                 BufferedReader br = new BufferedReader(isr);
-                 String query = br.readLine();
-                 parseQuery(query, parameters);
+             // parse request
+             Map<String, Object> parameters = new HashMap<String, Object>();
+             InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
+             BufferedReader br = new BufferedReader(isr);
+             String query = br.readLine();
+             parseQuery(query, parameters);
 
+             JSONObject cartHeader = new JSONObject();
+             JSONObject cartDetails = new JSONObject();
 
+             cartHeader.put("userName", "placeholder");
 
-                 String k = "{\"Full Name\":\"Ritu Sharma\", \"Tution Fees\":65400.0, \"Roll No.\":1704310046}"; //JSON TESTING
-                 JSONObject jsonOb = new JSONObject();
-                 Object file = JSONValue.parse(k);
-                 JSONObject jsonObjectdecode = (JSONObject)file;
+             cartDetails.put("cartItem"+1, "product");
+             cartDetails.put("cartItem"+2, "product");
+             cartDetails.put("cartItem"+3, "product");
 
-                 jsonOb.put("Full name", "Ritu Sharma");
-                 try {
-                     FileWriter files = new FileWriter("data.json");
-                     files.write(jsonOb.toJSONString());
-                     files.close();
-                 } catch (IOException e) {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                 }
-                 System.out.println("JSON file created: "+ jsonOb);
-                 String name = (String)jsonObjectdecode.get("Full Name");
-                 System.out.println(name);
+             cartHeader.put("items", cartDetails);
 
+             try {
+                 FileWriter files = new FileWriter("data.json");
+                 files.write(cartHeader.toJSONString());
+                 files.close();
+             } catch (IOException e) {
+                 // TODO Auto-generated catch block
+                 e.printStackTrace();
+             }
 
+             System.out.println("JSON file created: "+ cartHeader);
 
-                 // send response
-                 String response = "";
-                 for (String key : parameters.keySet())
-                          response += key + " = " + parameters.get(key) + "\n";
-                 he.sendResponseHeaders(200, response.length());
-                 OutputStream os = he.getResponseBody();
-                 os.write(response.toString().getBytes());
-                 os.close();
+             try {
+                 Object obj = new JSONParser().parse(new FileReader("data.json"));
+             } catch (ParseException e) {
+                 e.printStackTrace();
+             }
+
+             // send response
+             String response = "";
+             for (String key : parameters.keySet())
+                      response += key + " = " + parameters.get(key) + "\n";
+             he.sendResponseHeaders(200, response.length());
+             OutputStream os = he.getResponseBody();
+             os.write(response.toString().getBytes());
+             os.close();
          }
          public static void parseQuery(String query, Map<String, Object> parameters) throws UnsupportedEncodingException {
         	 if (query != null) {

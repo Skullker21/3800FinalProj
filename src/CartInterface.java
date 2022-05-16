@@ -1,8 +1,11 @@
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpRequest;
 import java.util.Scanner;
 
 public class CartInterface {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws URISyntaxException {
 		// TODO Auto-generated method stub
 		Item lemon = new Item("Lemon", 1, 1);
 		Item rtx3090 = new Item("RTX 3090", 2000, 1);
@@ -69,7 +72,7 @@ public class CartInterface {
 		}
 	}
 
-	private static void saveCart() {
+	private static void saveCart() throws URISyntaxException {
 
 		//POST request here
 
