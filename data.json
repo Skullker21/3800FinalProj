@@ -1,1 +1,1 @@
-{"userName":"placeholder","items":{"cartItem1":"product","cartItem2":"product","cartItem3":"product"}}
+{"user":"Monroe","cart":"{\"Apple\":{\"name\":\"Apple\",\"price\":2,\"quantity\":1},\"Lemon\":{\"name\":\"Lemon\",\"price\":1,\"quantity\":1},\"RTX 3090\":{\"name\":\"RTX 3090\",\"price\":2000,\"quantity\":1}}"}
