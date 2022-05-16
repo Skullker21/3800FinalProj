@@ -1,21 +1,30 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class CartInterface {
 
-	public static void main(String[] args) throws URISyntaxException {
+	public static void main(String[] args) throws URISyntaxException, IOException, InterruptedException {
 		// TODO Auto-generated method stub
 		Item lemon = new Item("Lemon", 1, 1);
 		Item rtx3090 = new Item("RTX 3090", 2000, 1);
 		Item apple = new Item("Apple", 2, 1);
-		
+
 		Cart userCart = new Cart();
-		
+
+		Scanner scn = new Scanner(System.in);
+
+		System.out.println("Enter your username: ");
+
+		String userName = scn.next();
+
 		System.out.println("Here are our items:\n"
 				+ "Lemons: $1\n"
 				+ "RTX 3090: $2000\n"
@@ -24,9 +33,8 @@ public class CartInterface {
 				+ "You can also type \"cart\" to display your cart's information.\n"
 				+ "Type \"remove\" to remove an item from your cart.\""
 				+ "Type \"exit\" to close the application.");
-		
-		Scanner scn = new Scanner(System.in);
-		
+
+
 		String userInput = scn.next();
 		while(!userInput.equals("exit")) {
 			if(userInput.equals("Lemons")) {
@@ -44,10 +52,14 @@ public class CartInterface {
 			else if(userInput.equals("cart")) {
 				userCart.print();;
 			}
+			else if(userInput.equals("save")){
+				saveCart(userName, userCart);
+			}
+			else if(userInput.equals("load")){
+				loadCart();
+			}
 			userInput = scn.nextLine();
 		}
-		
-		saveCart();
 		
 	}
 	private static void removingItems(Cart userCart) {
@@ -75,9 +87,34 @@ public class CartInterface {
 		}
 	}
 
-	private static void saveCart() throws URISyntaxException {
+	private static void saveCart(String userName, Cart cartToSave) throws URISyntaxException, IOException, InterruptedException {
 
-		//POST request here
+		ObjectMapper mapper = new ObjectMapper();
+
+		String cartString = mapper.writeValueAsString(cartToSave.items);
+
+		HashMap<String, String> values = new HashMap<>() {{
+			put("user", userName);
+			put("cart", cartString);
+		}};
+
+		String requestBody = mapper.writeValueAsString(values);
+
+		System.out.println(requestBody);
+
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create("http://localhost:8080/post"))
+				.POST(HttpRequest.BodyPublishers.ofString(requestBody))
+				.setHeader("User-Agent", "Java 17 HttpClient")
+				.header("Content-Type", "application/json")
+				.build();
+
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+		System.out.println(response.statusCode());
+
+		System.out.println(response.body());
 
 	}
 
@@ -85,17 +122,19 @@ public class CartInterface {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("http://localhost:8080/get"))
-						.build();
+				.build();
 
 		HttpResponse<String> response = null;
 		try {
 			response = client.send(request,
 					HttpResponse.BodyHandlers.ofString());
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (InterruptedException e) {
+		} catch (IOException | InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+
+		String whateverthefrick = String.valueOf(response);
+
+		System.out.println(whateverthefrick);
 
 		System.out.println(response.body());
 	}
