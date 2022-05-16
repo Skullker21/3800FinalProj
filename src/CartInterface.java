@@ -8,6 +8,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Scanner;
 
 public class CartInterface {
@@ -57,7 +58,8 @@ public class CartInterface {
 				saveCart(userName, userCart);
 			}
 			else if(userInput.equals("load")){
-				loadCart();
+				userCart = loadCart();
+				System.out.println("Cart Loaded");
 			}
 			userInput = scn.nextLine();
 		}
@@ -120,7 +122,7 @@ public class CartInterface {
 
 	}
 
-	private static void loadCart() throws JsonProcessingException {
+	private static Cart loadCart() throws JsonProcessingException {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("http://localhost:8080/get"))
@@ -134,19 +136,23 @@ public class CartInterface {
 			throw new RuntimeException(e);
 		}
 
-		String whateverthefrick = String.valueOf(response);
-
-
-
-		System.out.println(response.body());
 		ObjectMapper mapper = new ObjectMapper();
 
 		HashMap<String,String> map = mapper.readValue(response.body(), HashMap.class);
-		System.out.println(map.toString());
+
+		HashMap<String, LinkedHashMap> mockItems = mapper.readValue(map.get("cart"), HashMap.class);
 
 
-		Cart userCart = new Cart(mapper.readValue(map.get("cart"), HashMap.class));
+		HashMap<String, Item> items = new HashMap<String, Item>();
+		mockItems.forEach((key, value)
+				-> {
 
-		userCart.print();
+			items.put(key, new Item((String) value.get("name"), (Integer) value.get("price"), (Integer) value.get("quantity")));
+
+		});
+
+		Cart userCart = new Cart(items);
+
+		return userCart;
 	}
 }
