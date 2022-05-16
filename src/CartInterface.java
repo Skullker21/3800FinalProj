@@ -1,14 +1,15 @@
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Scanner;
-import java.net.http.*;
 
 public class CartInterface {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws URISyntaxException {
 		// TODO Auto-generated method stub
-
-		loadCart();
 		Item lemon = new Item("Lemon", 1, 1);
 		Item rtx3090 = new Item("RTX 3090", 2000, 1);
 		Item apple = new Item("Apple", 2, 1);
@@ -74,17 +75,17 @@ public class CartInterface {
 		}
 	}
 
-	private static void saveCart() {
+	private static void saveCart() throws URISyntaxException {
 
 		//POST request here
-		
+
 	}
 
 	private static void loadCart(){
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create("http://localhost:8080"))
-				.build();
+				.uri(URI.create("http://localhost:8080/get"))
+						.build();
 
 		HttpResponse<String> response = null;
 		try {

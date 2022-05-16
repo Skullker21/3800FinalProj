@@ -1,4 +1,6 @@
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -8,10 +10,8 @@ import java.util.Map;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 
-public class EchoPostHandler implements HttpHandler {
+public class GetHandler implements HttpHandler {
 
          @Override
 
@@ -19,32 +19,9 @@ public class EchoPostHandler implements HttpHandler {
                  // parse request
         	 
                  Map<String, Object> parameters = new HashMap<String, Object>();
-                 InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
-                 BufferedReader br = new BufferedReader(isr);
-                 String query = br.readLine();
+                 URI requestedUri = he.getRequestURI();
+                 String query = requestedUri.getRawQuery();
                  parseQuery(query, parameters);
-
-
-
-                 String k = "{\"Full Name\":\"Ritu Sharma\", \"Tution Fees\":65400.0, \"Roll No.\":1704310046}"; //JSON TESTING
-                 JSONObject jsonOb = new JSONObject();
-                 Object file = JSONValue.parse(k);
-                 JSONObject jsonObjectdecode = (JSONObject)file;
-
-                 jsonOb.put("Full name", "Ritu Sharma");
-                 try {
-                     FileWriter files = new FileWriter("data.json");
-                     files.write(jsonOb.toJSONString());
-                     files.close();
-                 } catch (IOException e) {
-                     // TODO Auto-generated catch block
-                     e.printStackTrace();
-                 }
-                 System.out.println("JSON file created: "+ jsonOb);
-                 String name = (String)jsonObjectdecode.get("Full Name");
-                 System.out.println(name);
-
-
 
                  // send response
                  String response = "";
@@ -53,15 +30,14 @@ public class EchoPostHandler implements HttpHandler {
                  he.sendResponseHeaders(200, response.length());
                  OutputStream os = he.getResponseBody();
                  os.write(response.toString().getBytes());
+
                  os.close();
          }
+         
          public static void parseQuery(String query, Map<String, Object> parameters) throws UnsupportedEncodingException {
         	 if (query != null) {
-
                  String[] pairs = query.split("[&]");
-
                  for (String pair : pairs) {
-
                       String[] param = pair.split("[=]");
                       String key = null;
                       String value = null;

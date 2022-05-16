@@ -1,43 +1,48 @@
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
+import java.io.*;
 import java.net.URLDecoder;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.simple.JSONObject;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-public class EchoGetHandler implements HttpHandler {
+public class PostHandler implements HttpHandler {
 
          @Override
 
          public void handle(HttpExchange he) throws IOException {
-                 // parse request
-                 Map<String, Object> parameters = new HashMap<String, Object>();
-                 URI requestedUri = he.getRequestURI();
-                 String query = requestedUri.getRawQuery();
-                 parseQuery(query, parameters);
+             // parse request
+             Map<String, Object> parameters = new HashMap<String, Object>();
+             InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
+             BufferedReader br = new BufferedReader(isr);
+             String query = br.readLine();
+             parseQuery(query, parameters);
 
-                 // send response
-                 String response = "";
-                 for (String key : parameters.keySet())
-                          response += key + " = " + parameters.get(key) + "\n";
-                 he.sendResponseHeaders(200, response.length());
-                 OutputStream os = he.getResponseBody();
-                 os.write(response.toString().getBytes());
+             Cart cart1 = new Cart();
 
-                 os.close();
+             ObjectMapper mapper = new ObjectMapper();
+             mapper.writeValue(Paths.get("data.json").toFile(), cart1);
+
+             // send response
+             String response = "";
+             for (String key : parameters.keySet())
+                      response += key + " = " + parameters.get(key) + "\n";
+             he.sendResponseHeaders(200, response.length());
+             OutputStream os = he.getResponseBody();
+             os.write(response.toString().getBytes());
+             os.close();
          }
-         
          public static void parseQuery(String query, Map<String, Object> parameters) throws UnsupportedEncodingException {
         	 if (query != null) {
+
                  String[] pairs = query.split("[&]");
+
                  for (String pair : pairs) {
+
                       String[] param = pair.split("[=]");
                       String key = null;
                       String value = null;

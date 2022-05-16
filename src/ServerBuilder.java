@@ -14,9 +14,9 @@ public class ServerBuilder {
         System.out.println("server started at " + port);
 
         server.createContext("/", new RootHandler());
-        server.createContext("/echoHeader", new EchoHeaderHandler());
-        server.createContext("/echoGet", new EchoGetHandler());
-        server.createContext("/echoPost", new EchoPostHandler());
+        server.createContext("/header", new HeaderHandler());
+        server.createContext("/get", new GetHandler());
+        server.createContext("/post", new PostHandler());
 
         server.setExecutor(null);
 
