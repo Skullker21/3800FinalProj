@@ -15,8 +15,6 @@ public class GetHandler implements HttpHandler {
          URI requestedUri = he.getRequestURI();
          String query = requestedUri.getRawQuery();
 
-         parseQuery(query);
-
          // send response
          File text = new File("data.json");
          Scanner scn = new Scanner(text);
@@ -32,7 +30,4 @@ public class GetHandler implements HttpHandler {
          os.close();
      }
 
-     public static void parseQuery(String query) throws UnsupportedEncodingException {
-
-     }
 }
