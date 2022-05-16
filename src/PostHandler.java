@@ -1,19 +1,16 @@
 import java.io.*;
-import java.net.URI;
 import java.net.URLDecoder;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
-public class EchoPostHandler implements HttpHandler {
+public class PostHandler implements HttpHandler {
 
          @Override
 
@@ -25,33 +22,10 @@ public class EchoPostHandler implements HttpHandler {
              String query = br.readLine();
              parseQuery(query, parameters);
 
-             JSONObject cartHeader = new JSONObject();
-             JSONObject cartDetails = new JSONObject();
+             Cart cart1 = new Cart();
 
-             cartHeader.put("userName", "placeholder");
-
-             cartDetails.put("cartItem"+1, "product");
-             cartDetails.put("cartItem"+2, "product");
-             cartDetails.put("cartItem"+3, "product");
-
-             cartHeader.put("items", cartDetails);
-
-             try {
-                 FileWriter files = new FileWriter("data.json");
-                 files.write(cartHeader.toJSONString());
-                 files.close();
-             } catch (IOException e) {
-                 // TODO Auto-generated catch block
-                 e.printStackTrace();
-             }
-
-             System.out.println("JSON file created: "+ cartHeader);
-
-             try {
-                 Object obj = new JSONParser().parse(new FileReader("data.json"));
-             } catch (ParseException e) {
-                 e.printStackTrace();
-             }
+             ObjectMapper mapper = new ObjectMapper();
+             mapper.writeValue(Paths.get("data.json").toFile(), cart1);
 
              // send response
              String response = "";

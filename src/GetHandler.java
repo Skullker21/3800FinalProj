@@ -7,12 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.json.simple.JSONObject;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-public class EchoGetHandler implements HttpHandler {
+public class GetHandler implements HttpHandler {
 
          @Override
 

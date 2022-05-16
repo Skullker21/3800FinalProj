@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EchoHeaderHandler implements HttpHandler {
+public class HeaderHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange he) throws IOException {
