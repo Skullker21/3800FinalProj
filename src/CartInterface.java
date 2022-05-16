@@ -58,8 +58,13 @@ public class CartInterface {
 				saveCart(userName, userCart);
 			}
 			else if(userInput.equals("load")){
-				userCart = loadCart();
-				System.out.println("Cart Loaded");
+				Cart tempCart = loadCart(userName);
+
+				if (tempCart != null) {
+					userCart = tempCart;
+					System.out.println("Cart Loaded");
+				}
+
 			}
 			userInput = scn.nextLine();
 		}
@@ -96,7 +101,6 @@ public class CartInterface {
 
 		String cartString = mapper.writeValueAsString(cartToSave.items);
 
-
 		HashMap<String, String> values = new HashMap<>() {{
 			put("user", userName);
 			put("cart", cartString);
@@ -104,7 +108,7 @@ public class CartInterface {
 
 		String requestBody = mapper.writeValueAsString(values);
 
-		System.out.println(requestBody);
+//		System.out.println(requestBody);
 
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
@@ -116,13 +120,13 @@ public class CartInterface {
 
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-		System.out.println(response.statusCode());
+//		System.out.println(response.statusCode());
 
 		System.out.println(response.body());
 
 	}
 
-	private static Cart loadCart() throws JsonProcessingException {
+	private static Cart loadCart(String name) throws JsonProcessingException {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("http://localhost:8080/get"))
@@ -139,6 +143,13 @@ public class CartInterface {
 		ObjectMapper mapper = new ObjectMapper();
 
 		HashMap<String,String> map = mapper.readValue(response.body(), HashMap.class);
+
+		if (!(map.get("user").equals(name))){
+
+			System.out.println("Saved data does not match entered username.");
+			return null;
+
+		}
 
 		HashMap<String, LinkedHashMap> mockItems = mapper.readValue(map.get("cart"), HashMap.class);
 
