@@ -1,9 +1,14 @@
+import java.io.IOException;
+import java.net.URI;
 import java.util.Scanner;
+import java.net.http.*;
 
 public class CartInterface {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+
+		loadCart();
 		Item lemon = new Item("Lemon", 1, 1);
 		Item rtx3090 = new Item("RTX 3090", 2000, 1);
 		Item apple = new Item("Apple", 2, 1);
@@ -72,6 +77,25 @@ public class CartInterface {
 	private static void saveCart() {
 
 		//POST request here
+		
+	}
 
+	private static void loadCart(){
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+				.uri(URI.create("http://localhost:8080"))
+				.build();
+
+		HttpResponse<String> response = null;
+		try {
+			response = client.send(request,
+					HttpResponse.BodyHandlers.ofString());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+
+		System.out.println(response.body());
 	}
 }
