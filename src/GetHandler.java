@@ -7,7 +7,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 public class GetHandler implements HttpHandler {
-
+    //get method
      @Override
 
      public void handle(HttpExchange he) throws IOException {
@@ -16,7 +16,9 @@ public class GetHandler implements HttpHandler {
          String query = requestedUri.getRawQuery();
 
          // send response
+         //creates file for JSON reading
          File text = new File("data.json");
+         // reads JSON file and puts string into body
          Scanner scn = new Scanner(text);
          String response = scn.nextLine();
 

@@ -15,6 +15,7 @@ public class PostHandler implements HttpHandler {
      @Override
 
      public void handle(HttpExchange he) throws IOException {
+
          // parse request
          InputStreamReader isr = new InputStreamReader(he.getRequestBody(), "utf-8");
          BufferedReader br = new BufferedReader(isr);
@@ -34,7 +35,9 @@ public class PostHandler implements HttpHandler {
          os.write(response.toString().getBytes());
          os.close();
      }
+
      public static void parseQuery(String query) throws IOException {
+         //writes the JSON string into file
          FileWriter file = new FileWriter("data.json");
          file.write(query);
          file.close();

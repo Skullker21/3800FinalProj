@@ -8,11 +8,12 @@ public class ServerBuilder {
 
     public static void main(String[] args) throws IOException {
         int port = 8080;
-
+        //assigns port
         HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
 
-        System.out.println("server started at " + port);
 
+        System.out.println("server started at " + port);
+        //assigns url for handlers
         server.createContext("/", new RootHandler());
         server.createContext("/header", new HeaderHandler());
         server.createContext("/get", new GetHandler());

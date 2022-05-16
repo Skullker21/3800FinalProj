@@ -1,5 +1,6 @@
 
 public class Item {
+	//Item Class represents item in Cart
 	String name;
 	int price;
 	int quantity;

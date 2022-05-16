@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class HeaderHandler implements HttpHandler {
-
+    // returns head of the HTTP server (used for debugging purposes)
     @Override
     public void handle(HttpExchange he) throws IOException {
         Headers headers = he.getRequestHeaders();
